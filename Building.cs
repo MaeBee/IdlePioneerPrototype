@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq.Expressions;
 
 namespace IdlePioneerPrototype
 {
@@ -50,13 +51,24 @@ namespace IdlePioneerPrototype
         public int level;
 
 
-        public Building(string bldName, string bldUse, string bldUpgrade, int bldLevel)
+        public Dictionary<string, float> TickIncome(int Millisecs)
+        {
+            Dictionary<string, float> returnIncome = new Dictionary<string, float>();
+
+            returnIncome.Add("", 0);
+
+            return returnIncome; //Util.Evaluate(autoGainFunc.Replace("level", level.ToString())) * (Millisecs / 1000);
+        }
+
+        public float ClickIncome()
+        {
+            return 0;
+            // return Util.Evaluate(clickGainFunc.Replace("level", level.ToString()));
+        }
+
+        public Building()
         {
             InitializeComponent();
-            this.lblNameText = bldName;
-            this.btnUseText = bldUse;
-            this.btnUpgradeText = bldUpgrade;
-            this.level = bldLevel;
         }
     }
 }

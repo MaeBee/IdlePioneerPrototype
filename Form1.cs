@@ -19,48 +19,21 @@ namespace IdlePioneerPrototype
             ReadGameNew();
         }
 
-        private List<Building> Buildings = new List<Building>();
-        private List<Resource> Resources = new List<Resource>();
-
-        public string ReadGame()
-        {
-            Buildings.Clear();
-            Resources.Clear();
-            flwBuildings.Controls.Clear();
-            flwResources.Controls.Clear();
-            XmlTextReader reader = new XmlTextReader(Application.StartupPath + "\\game.xml");
-            while (reader.Read())
-            {
-                reader.MoveToContent();
-                if (reader.Name == "building")
-                {
-                    Buildings.Add(new Building((string)reader.GetAttribute("name"), (string)reader.GetAttribute("use"), (string)reader.GetAttribute("upgrade"), Convert.ToInt32(reader.GetAttribute("level"))));
-                    //flwBuildings.Controls.Add(new Building((string)reader.GetAttribute("name"), (string)reader.GetAttribute("use"), (string)reader.GetAttribute("upgrade"), Convert.ToInt32(reader.GetAttribute("level"))));
-                }
-                if (reader.Name == "resource")
-                {
-                    Resources.Add(new Resource((string)reader.GetAttribute("name"), Convert.ToInt32(reader.GetAttribute("count")), Convert.ToInt32(reader.GetAttribute("storage"))));
-                    //flwResources.Controls.Add(new Resource((string)reader.GetAttribute("name"), Convert.ToInt32(reader.GetAttribute("count")), Convert.ToInt32(reader.GetAttribute("storage"))));
-                }
-                /*if (reader.Name == "module")
-                {
-                    ID = Convert.ToInt32((string)reader.GetAttribute("id"));
-                    varname = (string)reader.GetAttribute("name");
-                    //arModules.Add(new ProgramModule(ID, varname, ""));
-                }*/
-            }
-            reader.Close();
-            PopulateGame();
-            return "OK";
-        }
+        private Dictionary<string, Building> Buildings = new Dictionary<string, Building>();
+        private Dictionary<string, Resource> Resources = new Dictionary<string, Resource>();
 
         public void PopulateGame()
         {
-            foreach (Building bld in Buildings)
+            // Clear out UI to prevent duplicates
+            flwBuildings.Controls.Clear();
+            flwResources.Controls.Clear();
+
+            // Loop through Lists and add controls
+            foreach (Building bld in Buildings.Values)
             {
                 flwBuildings.Controls.Add(bld);
             }
-            foreach (Resource res in Resources)
+            foreach (Resource res in Resources.Values)
             {
                 flwResources.Controls.Add(res);
             }
@@ -68,22 +41,56 @@ namespace IdlePioneerPrototype
 
         public string ReadGameNew()
         {
+            // Prepare dummy classes
+            Building TempBuilding;
+            Resource TempResource;
+
+            // Clear out pre-existing game data to prevent duplicates
             Buildings.Clear();
             Resources.Clear();
-            flwBuildings.Controls.Clear();
-            flwResources.Controls.Clear();
 
+            // Open XML
             XmlDocument XMLDoc = new XmlDocument();
             XMLDoc.Load(Application.StartupPath + "\\game.xml");
+
+            // Find nodes and fill relevant Lists with data from the nodes
             foreach (XmlNode node in XMLDoc.SelectSingleNode("//game/buildings").ChildNodes)
             {
-                Buildings.Add(new Building((string)node.Attributes["name"].Value, (string)node.Attributes["use"].Value, (string)node.Attributes["upgrade"].Value, int.Parse(node.Attributes["level"].Value)));
+                // We have a building, so we need to create a new one to put into the Dictionary
+                TempBuilding = new Building();
+                // ... And fill it with data.
+                TempBuilding.lblNameText = (string)node.Attributes["name"].Value;
+                TempBuilding.btnUseText = (string)node.Attributes["use"].Value;
+                TempBuilding.btnUpgradeText = (string)node.Attributes["upgrade"].Value;
+                TempBuilding.level = int.Parse(node.Attributes["level"].Value);
+
+                // If there's more to the building, go through all the additional bits of data
+                if (node.HasChildNodes)
+                {
+
+                    foreach (XmlNode bldSub in node.ChildNodes)
+                    {
+                        if (bldSub.Name == "production")
+                        {
+                            // The building is producing something. Let's get the recipes!
+                        }
+                    }
+                }
+
+                // Finally, with all data acquired, we put the object into the Dictionary.
+                Buildings.Add(TempBuilding.lblNameText, TempBuilding);
             }
             foreach (XmlNode node in XMLDoc.SelectSingleNode("//game/resources").ChildNodes)
             {
-                Resources.Add(new Resource((string)node.Attributes["name"].Value, int.Parse(node.Attributes["count"].Value), int.Parse(node.Attributes["storage"].Value)));
+                // Same as with the buildings. Make new object, fill with data, put in Dictionary.
+                TempResource = new Resource();
+                TempResource.lblNameText = (string)node.Attributes["name"].Value;
+                TempResource.lblCountText = int.Parse(node.Attributes["count"].Value);
+                TempResource.lblStorageText = int.Parse(node.Attributes["storage"].Value);
+                Resources.Add(TempResource.lblNameText, TempResource);
             }
 
+            // Populate UI
             PopulateGame();
 
             return "OK";
@@ -97,6 +104,15 @@ namespace IdlePioneerPrototype
         private void reloadGamexmlToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ReadGameNew();
+        }
+
+        private void tick_Tick(object sender, EventArgs e)
+        {
+            // Calculate changes for the last 0.1s
+            foreach (Building bld in Buildings.Values)
+            {
+                //float income = bld.TickIncome(tick.Interval);
+            }
         }
     }
 }

@@ -47,12 +47,9 @@ namespace IdlePioneerPrototype
             }
         }
 
-        public Resource(string name, int count, int storage)
+        public Resource()
         {
             InitializeComponent();
-            this.lblNameText = name;
-            this.lblCountText = count;
-            this.lblStorageText = storage;
         }
     }
 }

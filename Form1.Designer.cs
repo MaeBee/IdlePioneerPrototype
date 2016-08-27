@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.grpBuildings = new System.Windows.Forms.GroupBox();
             this.flwBuildings = new System.Windows.Forms.FlowLayoutPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -36,6 +37,7 @@
             this.reloadGamexmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpResources = new System.Windows.Forms.GroupBox();
             this.flwResources = new System.Windows.Forms.FlowLayoutPanel();
+            this.tick = new System.Windows.Forms.Timer(this.components);
             this.grpBuildings.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.grpResources.SuspendLayout();
@@ -124,6 +126,10 @@
             this.flwResources.TabIndex = 1;
             this.flwResources.WrapContents = false;
             // 
+            // tick
+            // 
+            this.tick.Tick += new System.EventHandler(this.tick_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -154,6 +160,7 @@
         private System.Windows.Forms.ToolStripMenuItem reloadGamexmlToolStripMenuItem;
         private System.Windows.Forms.GroupBox grpResources;
         private System.Windows.Forms.FlowLayoutPanel flwResources;
+        private System.Windows.Forms.Timer tick;
     }
 }
 

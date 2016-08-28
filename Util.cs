@@ -10,6 +10,7 @@ namespace IdlePioneerPrototype
     {
         public static float Evaluate(string expression)
         {
+            // Will take a string and evaluate it as a mathematical equation
             DataTable table = new DataTable();
             table.Columns.Add("expression", typeof(string), expression);
             DataRow row = table.NewRow();

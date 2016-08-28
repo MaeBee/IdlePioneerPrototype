@@ -3,7 +3,7 @@
 	<buildings>
 		<building name="Civic Centre" use="Use" upgrade="Upgrade" level="1"/>
 		<building name="Woodcutter" use="Use" upgrade="Upgrade" level="1">
-			<production resource="Logs" onclick="1 * level" autogain="1 * level"/>
+			<production resource="Logs" onclick="1 * level" autogain="100 * level"/>
 		</building>
 		<building name="Carpentry" use="Use" upgrade="Upgrade" level="1"/>
 	</buildings>

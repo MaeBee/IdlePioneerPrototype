@@ -35,9 +35,11 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openGamexmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadGamexmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startStopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpResources = new System.Windows.Forms.GroupBox();
             this.flwResources = new System.Windows.Forms.FlowLayoutPanel();
             this.tick = new System.Windows.Forms.Timer(this.components);
+            this.tickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpBuildings.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.grpResources.SuspendLayout();
@@ -71,7 +73,9 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.startStopToolStripMenuItem,
+            this.tickToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(793, 24);
@@ -101,6 +105,14 @@
             this.reloadGamexmlToolStripMenuItem.Text = "Reload game.xml";
             this.reloadGamexmlToolStripMenuItem.Click += new System.EventHandler(this.reloadGamexmlToolStripMenuItem_Click);
             // 
+            // startStopToolStripMenuItem
+            // 
+            this.startStopToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.startStopToolStripMenuItem.Name = "startStopToolStripMenuItem";
+            this.startStopToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
+            this.startStopToolStripMenuItem.Text = "Start/Stop";
+            this.startStopToolStripMenuItem.Click += new System.EventHandler(this.startStopToolStripMenuItem_Click);
+            // 
             // grpResources
             // 
             this.grpResources.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -129,6 +141,14 @@
             // tick
             // 
             this.tick.Tick += new System.EventHandler(this.tick_Tick);
+            // 
+            // tickToolStripMenuItem
+            // 
+            this.tickToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.tickToolStripMenuItem.Enabled = false;
+            this.tickToolStripMenuItem.Name = "tickToolStripMenuItem";
+            this.tickToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.tickToolStripMenuItem.Text = "false";
             // 
             // Form1
             // 
@@ -161,6 +181,8 @@
         private System.Windows.Forms.GroupBox grpResources;
         private System.Windows.Forms.FlowLayoutPanel flwResources;
         private System.Windows.Forms.Timer tick;
+        private System.Windows.Forms.ToolStripMenuItem startStopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tickToolStripMenuItem;
     }
 }
 

@@ -49,26 +49,44 @@ namespace IdlePioneerPrototype
         }
 
         public int level;
+        public List<BuildingRecipe> BuildingRecipes = new List<BuildingRecipe>();
 
-
-        public Dictionary<string, float> TickIncome(int Millisecs)
+        public Dictionary<string, float> TickIncome(float Millisecs)
         {
+            // Calculate resource income for the given time frame (usually one tick)
             Dictionary<string, float> returnIncome = new Dictionary<string, float>();
-
-            returnIncome.Add("", 0);
-
-            return returnIncome; //Util.Evaluate(autoGainFunc.Replace("level", level.ToString())) * (Millisecs / 1000);
+            foreach (BuildingRecipe recipe in BuildingRecipes)
+            {
+                returnIncome.Add(recipe.Resource, Util.Evaluate(recipe.AutoGain.Replace("level", level.ToString())) * (Millisecs / 1000));
+            }
+            return returnIncome;
         }
 
-        public float ClickIncome()
+        public Dictionary<string, float> ClickIncome()
         {
-            return 0;
-            // return Util.Evaluate(clickGainFunc.Replace("level", level.ToString()));
+            // Calculate resource income for a single click
+            Dictionary<string, float> returnIncome = new Dictionary<string, float>();
+            foreach (BuildingRecipe recipe in BuildingRecipes)
+            {
+                returnIncome.Add(recipe.Resource, Util.Evaluate(recipe.OnClick.Replace("level", level.ToString())));
+            }
+            return returnIncome;
         }
 
         public Building()
         {
             InitializeComponent();
+        }
+    }
+
+    public class BuildingRecipe
+    {
+        public string Resource;
+        public string OnClick;
+        public string AutoGain;
+
+        public BuildingRecipe()
+        {
         }
     }
 }

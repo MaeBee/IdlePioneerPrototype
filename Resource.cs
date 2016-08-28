@@ -23,7 +23,7 @@ namespace IdlePioneerPrototype
             }
         }
 
-        public int lblCountText
+        public float lblCountText
         {
             get
             {
@@ -35,7 +35,7 @@ namespace IdlePioneerPrototype
             }
         }
 
-        public int lblStorageText
+        public float lblStorageText
         {
             get
             {

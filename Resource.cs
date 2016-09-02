@@ -23,14 +23,16 @@ namespace IdlePioneerPrototype
             }
         }
 
-        public float lblCountText
+        private float count;
+        public float Count
         {
             get
             {
-                return Convert.ToInt32(lblCount.Text);
+                return count;
             }
             set
             {
+                count = value;
                 lblCount.Text = value.ToString();
             }
         }

@@ -32,6 +32,7 @@ namespace IdlePioneerPrototype
             foreach (Building bld in Buildings.Values)
             {
                 flwBuildings.Controls.Add(bld);
+                bld.UpgradeButtonClick += new EventHandler(Building_ButtonClick);
             }
             foreach (Resource res in Resources.Values)
             {
@@ -62,7 +63,7 @@ namespace IdlePioneerPrototype
                 TempBuilding.lblNameText = (string)node.Attributes["name"].Value;
                 TempBuilding.btnUseText = (string)node.Attributes["use"].Value;
                 TempBuilding.btnUpgradeText = (string)node.Attributes["upgrade"].Value;
-                TempBuilding.level = int.Parse(node.Attributes["level"].Value);
+                TempBuilding.Level = int.Parse(node.Attributes["level"].Value);
 
                 // If there's more to the building, go through all the additional bits of data
                 if (node.HasChildNodes)
@@ -79,6 +80,14 @@ namespace IdlePioneerPrototype
                             TempRecipe.Resource = (string)bldSub.Attributes["resource"].Value;
                             TempBuilding.BuildingRecipes.Add(TempRecipe);
                         }
+                        if (bldSub.Name == "upgrade")
+                        {
+                            // The building has upgrades defined. Each child node will define one resource and how it scales with levels, so we just read them all and dump them into the Dictionary we use to calculate the actual cost later on.
+                            foreach (XmlNode bldUpg in bldSub.ChildNodes)
+                            {
+                                TempBuilding.UpgradeCost.Add((string)bldUpg.Attributes["resource"].Value, (string)bldUpg.Attributes["formula"].Value);
+                            }
+                        }
                         // Other building sub nodes like work places will go here
                     }
                 }
@@ -91,7 +100,7 @@ namespace IdlePioneerPrototype
                 // Same as with the buildings. Make new object, fill with data, put in Dictionary.
                 TempResource = new Resource();
                 TempResource.lblNameText = (string)node.Attributes["name"].Value;
-                TempResource.lblCountText = int.Parse(node.Attributes["count"].Value);
+                TempResource.Count = int.Parse(node.Attributes["count"].Value);
                 TempResource.lblStorageText = int.Parse(node.Attributes["storage"].Value);
                 Resources.Add(TempResource.lblNameText, TempResource);
             }
@@ -121,13 +130,13 @@ namespace IdlePioneerPrototype
                 {
                     // Loop through returned resources and add them to the stockpile
                     Resource res = Resources[Income.Key];
-                    if (res.lblCountText + Income.Value < res.lblStorageText)
+                    if (res.Count + Income.Value < res.lblStorageText)
                     {
-                        res.lblCountText += Income.Value;
+                        res.Count += Income.Value;
                     }
                     else
                     {
-                        res.lblCountText = res.lblStorageText;
+                        res.Count = res.lblStorageText;
                     }
                     Resources[Income.Key] = res;
                 }
@@ -140,6 +149,31 @@ namespace IdlePioneerPrototype
             // Toggle the timer to pause/unpause the game
             tick.Enabled = !tick.Enabled;
             tickToolStripMenuItem.Text = tick.Enabled.ToString();
+        }
+
+        protected void Building_ButtonClick(object sender, EventArgs e)
+        {
+            // An upgrade button has been pressed.
+            // First, we need to figure out which building the user wants to upgrade and get its upgrade cost formulae
+            Building bldToUpgrade = (Building)sender;
+            Dictionary<string, string> UpgradeCost = bldToUpgrade.UpgradeCost;
+
+            // Then we need to figure out if there's enough resources to upgrade. If not, we'll let the user know.
+            foreach (KeyValuePair<string, string> resource in UpgradeCost)
+            {
+                if ((Resources[resource.Key].Count - Util.Evaluate(resource.Value.Replace("level", bldToUpgrade.Level.ToString()))) < 0)
+                {
+                    MessageBox.Show(resource.Key + " needed: " + Util.Evaluate(resource.Value.Replace("level", bldToUpgrade.Level.ToString())).ToString() + "\r\n" + resource.Key + " in storage: " + Resources[resource.Key].Count.ToString());
+                    return;
+                }
+            }
+
+            // If we haven't left yet, it means we've got the resources to go ahead with the upgrade, so we execute it and take the resources from storage.
+            bldToUpgrade.Level++;
+            foreach (KeyValuePair<string, string> resource in UpgradeCost)
+            {
+                Resources[resource.Key].Count = Resources[resource.Key].Count - Util.Evaluate(resource.Value.Replace("level", bldToUpgrade.Level.ToString()));
+            }
         }
     }
 }

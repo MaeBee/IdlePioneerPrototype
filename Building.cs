@@ -48,8 +48,23 @@ namespace IdlePioneerPrototype
             }
         }
 
-        public int level;
+        private int level;
+        public int Level
+        {
+            get
+            {
+                return level;
+            }
+            set
+            {
+                level = value;
+                lblLevel.Text = "Level " + value.ToString();
+            }
+        }
+
         public List<BuildingRecipe> BuildingRecipes = new List<BuildingRecipe>();
+        public Dictionary<string, string> UpgradeCost = new Dictionary<string, string>();
+        public event EventHandler UpgradeButtonClick;
 
         public Dictionary<string, float> TickIncome(float Millisecs)
         {
@@ -57,10 +72,29 @@ namespace IdlePioneerPrototype
             Dictionary<string, float> returnIncome = new Dictionary<string, float>();
             foreach (BuildingRecipe recipe in BuildingRecipes)
             {
-                returnIncome.Add(recipe.Resource, Util.Evaluate(recipe.AutoGain.Replace("level", level.ToString())) * (Millisecs / 1000));
+                returnIncome.Add(recipe.Resource, Util.Evaluate(recipe.AutoGain.Replace("level", Level.ToString())) * (Millisecs / 1000));
             }
             return returnIncome;
         }
+
+        public Dictionary<string, float> Upgrade()
+        {
+            Dictionary<string, float> returnCost = new Dictionary<string, float>();
+            bool upgradeable = true;
+            foreach (KeyValuePair<string, string> resource in UpgradeCost)
+            {
+
+            }
+            if (!upgradeable)
+            {
+                return returnCost;
+            }
+            else
+            {
+                return returnCost;
+            }
+        }
+
 
         public Dictionary<string, float> ClickIncome()
         {
@@ -68,7 +102,7 @@ namespace IdlePioneerPrototype
             Dictionary<string, float> returnIncome = new Dictionary<string, float>();
             foreach (BuildingRecipe recipe in BuildingRecipes)
             {
-                returnIncome.Add(recipe.Resource, Util.Evaluate(recipe.OnClick.Replace("level", level.ToString())));
+                returnIncome.Add(recipe.Resource, Util.Evaluate(recipe.OnClick.Replace("level", Level.ToString())));
             }
             return returnIncome;
         }
@@ -76,6 +110,14 @@ namespace IdlePioneerPrototype
         public Building()
         {
             InitializeComponent();
+        }
+
+        private void btnUpgrade_Click(object sender, EventArgs e)
+        {
+            if (this.UpgradeButtonClick != null)
+            {
+                this.UpgradeButtonClick(this, e);
+            }
         }
     }
 

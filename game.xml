@@ -2,13 +2,26 @@
 <game>
 	<buildings>
 		<building name="Civic Centre" use="Use" upgrade="Upgrade" level="1"/>
+			<upgrade>
+				<cost resource="Logs" formula="1000 * level * level"/>
+				<cost resource="Planks" formula="1000 * level"/>
+			</upgrade>
 		<building name="Woodcutter" use="Use" upgrade="Upgrade" level="1">
-			<production resource="Logs" onclick="1 * level" autogain="100 * level"/>
+			<production resource="Logs" onclick="1 * level" autogain="10 * level * level"/>
+			<upgrade>
+				<cost resource="Logs" formula="100 * level"/>
+			</upgrade>
 		</building>
-		<building name="Carpentry" use="Use" upgrade="Upgrade" level="1"/>
+		<building name="Carpentry" use="Use" upgrade="Upgrade" level="1">
+			<production resource="Planks" onclick="1 * level" autogain="10 * level" consumes="Logs" ratio="10"/> <!-- 10 Logs will yield a Plank -->
+			<upgrade>
+				<cost resource="Logs" formula="100 * level * level"/>
+				<cost resource="Planks" formula="10 * level"/>
+			</upgrade>
+		</building>
 	</buildings>
 	<resources>
-		<resource name="Logs" count="1000" storage="10000"/>
-		<resource name="Food" count="1000" storage="10000"/>
+		<resource name="Logs" count="1000" storage="1000000"/>
+		<resource name="Planks" count="1000" storage="1000000"/>
 	</resources>
 </game>

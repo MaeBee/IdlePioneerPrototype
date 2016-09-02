@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <game>
 	<buildings>
-		<building name="Civic Centre" use="Use" upgrade="Upgrade" level="1"/>
+		<building name="Civic Centre" use="Use" upgrade="Upgrade" level="1">
 			<upgrade>
 				<cost resource="Logs" formula="1000 * level * level"/>
 				<cost resource="Planks" formula="1000 * level"/>
 			</upgrade>
+		</building>
 		<building name="Woodcutter" use="Use" upgrade="Upgrade" level="1">
 			<production resource="Logs" onclick="1 * level" autogain="10 * level * level"/>
 			<upgrade>
@@ -13,7 +14,7 @@
 			</upgrade>
 		</building>
 		<building name="Carpentry" use="Use" upgrade="Upgrade" level="1">
-			<production resource="Planks" onclick="1 * level" autogain="10 * level" consumes="Logs" ratio="10"/> <!-- 10 Logs will yield a Plank -->
+			<production resource="Planks" onclick="1 * level" autogain="10 * level" consumes="Logs" ratio="10"/> <!-- ratio="10" means that 10 Logs will yield a Plank -->
 			<upgrade>
 				<cost resource="Logs" formula="100 * level * level"/>
 				<cost resource="Planks" formula="10 * level"/>

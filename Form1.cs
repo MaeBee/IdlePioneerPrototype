@@ -129,16 +129,7 @@ namespace IdlePioneerPrototype
                 foreach (KeyValuePair<string, float> Income in bld.TickIncome(tick.Interval))
                 {
                     // Loop through returned resources and add them to the stockpile
-                    Resource res = Resources[Income.Key];
-                    if (res.Count + Income.Value < res.lblStorageText)
-                    {
-                        res.Count += Income.Value;
-                    }
-                    else
-                    {
-                        res.Count = res.lblStorageText;
-                    }
-                    Resources[Income.Key] = res;
+                    AddResource(Income.Key, Income.Value);
                 }
             }
             this.Update();
@@ -156,23 +147,65 @@ namespace IdlePioneerPrototype
             // An upgrade button has been pressed.
             // First, we need to figure out which building the user wants to upgrade and get its upgrade cost formulae
             Building bldToUpgrade = (Building)sender;
-            Dictionary<string, string> UpgradeCost = bldToUpgrade.UpgradeCost;
 
             // Then we need to figure out if there's enough resources to upgrade. If not, we'll let the user know.
-            foreach (KeyValuePair<string, string> resource in UpgradeCost)
+            foreach (KeyValuePair<string, string> resource in bldToUpgrade.UpgradeCost)
             {
-                if ((Resources[resource.Key].Count - Util.Evaluate(resource.Value.Replace("level", bldToUpgrade.Level.ToString()))) < 0)
+                if (!CanRemoveResource(resource.Key, Util.Evaluate(resource.Value.Replace("level", bldToUpgrade.Level.ToString()))))
                 {
-                    MessageBox.Show(resource.Key + " needed: " + Util.Evaluate(resource.Value.Replace("level", bldToUpgrade.Level.ToString())).ToString() + "\r\n" + resource.Key + " in storage: " + Resources[resource.Key].Count.ToString());
+                    MessageBox.Show("Not enough " + resource.Key + "!");
                     return;
                 }
             }
 
             // If we haven't left yet, it means we've got the resources to go ahead with the upgrade, so we execute it and take the resources from storage.
-            bldToUpgrade.Level++;
-            foreach (KeyValuePair<string, string> resource in UpgradeCost)
+            foreach (KeyValuePair<string, string> resource in bldToUpgrade.UpgradeCost)
             {
-                Resources[resource.Key].Count = Resources[resource.Key].Count - Util.Evaluate(resource.Value.Replace("level", bldToUpgrade.Level.ToString()));
+                RemoveResource(resource.Key, Util.Evaluate(resource.Value.Replace("level", bldToUpgrade.Level.ToString())));
+            }
+            bldToUpgrade.Level++;
+        }
+
+        public bool AddResource(string Resource, float Count)
+        {
+            if (Resources[Resource].Count >= Resources[Resource].lblStorageText)
+            {
+                return false;
+            }
+            if (Resources[Resource].Count + Count >= Resources[Resource].lblStorageText)
+            {
+                Resources[Resource].Count = Resources[Resource].lblStorageText;
+                return true;
+            }
+            else
+            {
+                Resources[Resource].Count += Count;
+                return false;
+            }
+        }
+
+        public bool RemoveResource(string Resource, float Count)
+        {
+            if (!CanRemoveResource(Resource, Count))
+            {
+                return false;
+            }
+            else
+            {
+                Resources[Resource].Count -= Count;
+                return true;
+            }
+        }
+
+        public bool CanRemoveResource(string Resource, float Count)
+        {
+            if (Resources[Resource].Count - Count < 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
     }

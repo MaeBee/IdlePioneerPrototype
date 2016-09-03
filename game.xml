@@ -6,23 +6,36 @@
 				<cost resource="Logs" formula="1000 * level * level"/>
 				<cost resource="Planks" formula="1000 * level"/>
 			</upgrade>
+			<storage>
+				<slot resource="Logs" formula="1000 * (level + 1) * (level + 1)"/>
+				<slot resource="Planks" formula="1000 * (level + 1)"/>
+			</storage>
 		</building>
 		<building name="Woodcutter" use="Use" upgrade="Upgrade" level="1">
-			<production resource="Logs" onclick="1 * level" autogain="10 * level * level"/>
+			<production resource="Logs" onclick="1 * level" autogain="10 * level * level" consumes="" ratio=""/>
 			<upgrade>
 				<cost resource="Logs" formula="100 * level"/>
 			</upgrade>
 		</building>
-		<building name="Carpentry" use="Use" upgrade="Upgrade" level="1">
-			<production resource="Planks" onclick="1 * level" autogain="10 * level" consumes="Logs" ratio="10"/> <!-- ratio="10" means that 10 Logs will yield a Plank -->
+		<building name="Carpentry" use="Use" upgrade="Upgrade" level="0">
+			<production resource="Planks" onclick="1 * level" autogain="10 * level" consumes="Logs" ratio="10"/>
 			<upgrade>
 				<cost resource="Logs" formula="100 * level * level"/>
-				<cost resource="Planks" formula="10 * level"/>
 			</upgrade>
+		</building>
+		<building name="Warehouse" use="" upgrade="Upgrade" level="0">
+			<upgrade>
+				<cost resource="Logs" formula="10000 * level"/>
+				<cost resource="Planks" formula="10000 * level"/>
+			</upgrade>
+			<storage>
+				<slot resource="Logs" formula="10000 * (level + 1)"/>
+				<slot resource="Planks" formula="10000 * (level + 1)"/>
+			</storage>
 		</building>
 	</buildings>
 	<resources>
-		<resource name="Logs" count="1000" storage="1000000"/>
-		<resource name="Planks" count="1000" storage="1000000"/>
+		<resource name="Logs" count="1000"/>
+		<resource name="Planks" count="1000"/>
 	</resources>
 </game>

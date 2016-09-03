@@ -37,7 +37,9 @@ namespace IdlePioneerPrototype
             foreach (Resource res in Resources.Values)
             {
                 flwResources.Controls.Add(res);
+                res.Storage = GetStorage(res.lblNameText);
             }
+            UpdateIncome();
         }
 
         public string ReadGame()
@@ -78,7 +80,12 @@ namespace IdlePioneerPrototype
                             TempRecipe.AutoGain = (string)bldSub.Attributes["autogain"].Value;
                             TempRecipe.OnClick = (string)bldSub.Attributes["onclick"].Value;
                             TempRecipe.Resource = (string)bldSub.Attributes["resource"].Value;
-                            TempBuilding.BuildingRecipes.Add(TempRecipe);
+                            if (bldSub.Attributes["ratio"].Value != "")
+                            {
+                                TempRecipe.Consumes = (string)bldSub.Attributes["consumes"].Value;
+                                TempRecipe.Ratio = float.Parse(bldSub.Attributes["ratio"].Value);
+                            }
+                            TempBuilding.BuildingRecipes.Add(TempRecipe.Resource, TempRecipe);
                         }
                         if (bldSub.Name == "upgrade")
                         {
@@ -86,6 +93,14 @@ namespace IdlePioneerPrototype
                             foreach (XmlNode bldUpg in bldSub.ChildNodes)
                             {
                                 TempBuilding.UpgradeCost.Add((string)bldUpg.Attributes["resource"].Value, (string)bldUpg.Attributes["formula"].Value);
+                            }
+                        }
+                        if (bldSub.Name == "storage")
+                        {
+                            // The building has storage defined. Each child node will define one resource and how it scales with levels, so we just read them all and dump them into the Dictionary we use to calculate the actual storage space later on.
+                            foreach (XmlNode bldSto in bldSub.ChildNodes)
+                            {
+                                TempBuilding.Storage.Add((string)bldSto.Attributes["resource"].Value, (string)bldSto.Attributes["formula"].Value);
                             }
                         }
                         // Other building sub nodes like work places will go here
@@ -101,7 +116,6 @@ namespace IdlePioneerPrototype
                 TempResource = new Resource();
                 TempResource.lblNameText = (string)node.Attributes["name"].Value;
                 TempResource.Count = int.Parse(node.Attributes["count"].Value);
-                TempResource.lblStorageText = int.Parse(node.Attributes["storage"].Value);
                 Resources.Add(TempResource.lblNameText, TempResource);
             }
 
@@ -132,7 +146,7 @@ namespace IdlePioneerPrototype
                     AddResource(Income.Key, Income.Value);
                 }
             }
-            this.Update();
+            // this.Update();
         }
 
         private void startStopToolStripMenuItem_Click(object sender, EventArgs e)
@@ -145,13 +159,13 @@ namespace IdlePioneerPrototype
         protected void Building_ButtonClick(object sender, EventArgs e)
         {
             // An upgrade button has been pressed.
-            // First, we need to figure out which building the user wants to upgrade and get its upgrade cost formulae
+            // First, we need to figure out which building the user wants to upgrade
             Building bldToUpgrade = (Building)sender;
 
             // Then we need to figure out if there's enough resources to upgrade. If not, we'll let the user know.
             foreach (KeyValuePair<string, string> resource in bldToUpgrade.UpgradeCost)
             {
-                if (!CanRemoveResource(resource.Key, Util.Evaluate(resource.Value.Replace("level", bldToUpgrade.Level.ToString()))))
+                if (!CanRemoveResource(resource.Key, bldToUpgrade.GetUpgradeCost(resource.Key)))
                 {
                     MessageBox.Show("Not enough " + resource.Key + "!");
                     return;
@@ -161,20 +175,25 @@ namespace IdlePioneerPrototype
             // If we haven't left yet, it means we've got the resources to go ahead with the upgrade, so we execute it and take the resources from storage.
             foreach (KeyValuePair<string, string> resource in bldToUpgrade.UpgradeCost)
             {
-                RemoveResource(resource.Key, Util.Evaluate(resource.Value.Replace("level", bldToUpgrade.Level.ToString())));
+                RemoveResource(resource.Key, bldToUpgrade.GetUpgradeCost(resource.Key));
             }
             bldToUpgrade.Level++;
+            foreach (Resource res in Resources.Values)
+            {
+                res.Storage = GetStorage(res.lblNameText);
+            }
+            UpdateIncome();
         }
 
         public bool AddResource(string Resource, float Count)
         {
-            if (Resources[Resource].Count >= Resources[Resource].lblStorageText)
+            if (Resources[Resource].Count >= GetStorage(Resource))
             {
                 return false;
             }
-            if (Resources[Resource].Count + Count >= Resources[Resource].lblStorageText)
+            if (Resources[Resource].Count + Count >= GetStorage(Resource))
             {
-                Resources[Resource].Count = Resources[Resource].lblStorageText;
+                Resources[Resource].Count = GetStorage(Resource);
                 return true;
             }
             else
@@ -206,6 +225,31 @@ namespace IdlePioneerPrototype
             else
             {
                 return true;
+            }
+        }
+
+        public float GetStorage(string Resource)
+        {
+            float returnFloat = 0f;
+            foreach (Building bld in Buildings.Values)
+            {
+                returnFloat += bld.GetStorage(Resource);
+            }
+            return returnFloat;
+        }
+
+        public void UpdateIncome()
+        {
+            foreach (Resource res in Resources.Values)
+            {
+                res.Income = 0f;
+            }
+            foreach (Building bld in Buildings.Values)
+            {
+                foreach (KeyValuePair<string, float> income in bld.TickIncome(1000))
+                {
+                    Resources[income.Key].Income += income.Value;
+                }
             }
         }
     }

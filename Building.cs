@@ -59,20 +59,33 @@ namespace IdlePioneerPrototype
             {
                 level = value;
                 lblLevel.Text = "Level " + value.ToString();
+                lblUpgradeCost.Text = UpgradeCostList();
             }
         }
 
-        public List<BuildingRecipe> BuildingRecipes = new List<BuildingRecipe>();
+        public Dictionary<string,BuildingRecipe> BuildingRecipes = new Dictionary<string,BuildingRecipe>();
         public Dictionary<string, string> UpgradeCost = new Dictionary<string, string>();
+        public Dictionary<string, string> Storage = new Dictionary<string, string>();
         public event EventHandler UpgradeButtonClick;
 
         public Dictionary<string, float> TickIncome(float Millisecs)
         {
             // Calculate resource income for the given time frame (usually one tick)
             Dictionary<string, float> returnIncome = new Dictionary<string, float>();
-            foreach (BuildingRecipe recipe in BuildingRecipes)
+            foreach (BuildingRecipe recipe in BuildingRecipes.Values)
             {
                 returnIncome.Add(recipe.Resource, Util.Evaluate(recipe.AutoGain.Replace("level", Level.ToString())) * (Millisecs / 1000));
+                if (recipe.Consumes != null)
+                {
+                    if (returnIncome.ContainsKey(recipe.Consumes))
+                    {
+                        returnIncome[recipe.Consumes] -= Util.Evaluate(recipe.AutoGain.Replace("level", Level.ToString())) * (Millisecs / 1000) * recipe.Ratio;
+                    }
+                    else
+                    {
+                        returnIncome.Add(recipe.Consumes, -(Util.Evaluate(recipe.AutoGain.Replace("level", Level.ToString())) * (Millisecs / 1000) * recipe.Ratio));
+                    }
+                }
             }
             return returnIncome;
         }
@@ -95,12 +108,37 @@ namespace IdlePioneerPrototype
             }
         }
 
+        public float GetUpgradeCost(string Resource)
+        {
+            // Input resource name, output the calculated amount of that resource for the next upgrade. Still will have to be looped for every resource.
+            if (UpgradeCost.ContainsKey(Resource))
+            {
+                return Util.Evaluate(UpgradeCost[Resource].Replace("level", (Level + 1).ToString()));
+            }
+            else
+            {
+                return 0f;
+            }
+        }
+
+        public float GetStorage(string Resource)
+        {
+            // Input resource name, output the calculated storage provided for that resource
+            if (Storage.ContainsKey(Resource))
+            {
+                return Util.Evaluate(Storage[Resource].Replace("level", Level.ToString()));
+            }
+            else
+            {
+                return 0f;
+            }
+        }
 
         public Dictionary<string, float> ClickIncome()
         {
             // Calculate resource income for a single click
             Dictionary<string, float> returnIncome = new Dictionary<string, float>();
-            foreach (BuildingRecipe recipe in BuildingRecipes)
+            foreach (BuildingRecipe recipe in BuildingRecipes.Values)
             {
                 returnIncome.Add(recipe.Resource, Util.Evaluate(recipe.OnClick.Replace("level", Level.ToString())));
             }
@@ -119,6 +157,22 @@ namespace IdlePioneerPrototype
                 this.UpgradeButtonClick(this, e);
             }
         }
+
+        public string UpgradeCostList()
+        {
+            // Compile the upgrade cost for the next level into a string for the label. Invoked on every change of the Level var.
+            string returnString = "Upgrade cost:";
+            foreach (KeyValuePair<string, string> res in UpgradeCost)
+            {
+                returnString += "\r\n" + res.Key + ": " + GetUpgradeCost(res.Key).ToString();
+            }
+            return returnString;
+        }
+
+        private void Building_Load(object sender, EventArgs e)
+        {
+            lblUpgradeCost.Text = UpgradeCostList();
+        }
     }
 
     public class BuildingRecipe
@@ -126,6 +180,8 @@ namespace IdlePioneerPrototype
         public string Resource;
         public string OnClick;
         public string AutoGain;
+        public string Consumes;
+        public float Ratio;
 
         public BuildingRecipe()
         {

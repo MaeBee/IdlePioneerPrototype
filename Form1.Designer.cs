@@ -36,10 +36,10 @@
             this.openGamexmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadGamexmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startStopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpResources = new System.Windows.Forms.GroupBox();
             this.flwResources = new System.Windows.Forms.FlowLayoutPanel();
             this.tick = new System.Windows.Forms.Timer(this.components);
-            this.tickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpBuildings.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.grpResources.SuspendLayout();
@@ -52,7 +52,7 @@
             this.grpBuildings.Controls.Add(this.flwBuildings);
             this.grpBuildings.Location = new System.Drawing.Point(12, 27);
             this.grpBuildings.Name = "grpBuildings";
-            this.grpBuildings.Size = new System.Drawing.Size(193, 511);
+            this.grpBuildings.Size = new System.Drawing.Size(220, 511);
             this.grpBuildings.TabIndex = 0;
             this.grpBuildings.TabStop = false;
             this.grpBuildings.Text = "Buildings";
@@ -66,7 +66,7 @@
             this.flwBuildings.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flwBuildings.Location = new System.Drawing.Point(2, 19);
             this.flwBuildings.Name = "flwBuildings";
-            this.flwBuildings.Size = new System.Drawing.Size(185, 486);
+            this.flwBuildings.Size = new System.Drawing.Size(212, 477);
             this.flwBuildings.TabIndex = 0;
             this.flwBuildings.WrapContents = false;
             // 
@@ -113,14 +113,22 @@
             this.startStopToolStripMenuItem.Text = "Start/Stop";
             this.startStopToolStripMenuItem.Click += new System.EventHandler(this.startStopToolStripMenuItem_Click);
             // 
+            // tickToolStripMenuItem
+            // 
+            this.tickToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.tickToolStripMenuItem.Enabled = false;
+            this.tickToolStripMenuItem.Name = "tickToolStripMenuItem";
+            this.tickToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.tickToolStripMenuItem.Text = "false";
+            // 
             // grpResources
             // 
             this.grpResources.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.grpResources.Controls.Add(this.flwResources);
-            this.grpResources.Location = new System.Drawing.Point(211, 27);
+            this.grpResources.Location = new System.Drawing.Point(238, 27);
             this.grpResources.Name = "grpResources";
-            this.grpResources.Size = new System.Drawing.Size(200, 511);
+            this.grpResources.Size = new System.Drawing.Size(260, 511);
             this.grpResources.TabIndex = 2;
             this.grpResources.TabStop = false;
             this.grpResources.Text = "Resources";
@@ -134,21 +142,13 @@
             this.flwResources.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flwResources.Location = new System.Drawing.Point(6, 19);
             this.flwResources.Name = "flwResources";
-            this.flwResources.Size = new System.Drawing.Size(188, 486);
+            this.flwResources.Size = new System.Drawing.Size(242, 477);
             this.flwResources.TabIndex = 1;
             this.flwResources.WrapContents = false;
             // 
             // tick
             // 
             this.tick.Tick += new System.EventHandler(this.tick_Tick);
-            // 
-            // tickToolStripMenuItem
-            // 
-            this.tickToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.tickToolStripMenuItem.Enabled = false;
-            this.tickToolStripMenuItem.Name = "tickToolStripMenuItem";
-            this.tickToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
-            this.tickToolStripMenuItem.Text = "false";
             // 
             // Form1
             // 

@@ -37,15 +37,31 @@ namespace IdlePioneerPrototype
             }
         }
 
-        public float lblStorageText
+        private float storage;
+        public float Storage
         {
             get
             {
-                return Convert.ToInt32(lblStorage.Text);
+                return storage;
             }
             set
             {
+                storage = value;
                 lblStorage.Text = value.ToString();
+            }
+        }
+
+        private float income;
+        public float Income
+        {
+            set
+            {
+                income = value;
+                lblIncome.Text = "(" + value + "/sec)";
+            }
+            get
+            {
+                return income;
             }
         }
 

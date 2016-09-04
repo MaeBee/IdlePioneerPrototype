@@ -143,7 +143,14 @@ namespace IdlePioneerPrototype
                 foreach (KeyValuePair<string, float> Income in bld.TickIncome(tick.Interval))
                 {
                     // Loop through returned resources and add them to the stockpile
-                    AddResource(Income.Key, Income.Value);
+                    if (Income.Value > 0)
+                    {
+                        AddResource(Income.Key, Income.Value);
+                    }
+                    else
+                    {
+                        RemoveResource(Income.Key, -Income.Value);
+                    }
                 }
             }
             // this.Update();
